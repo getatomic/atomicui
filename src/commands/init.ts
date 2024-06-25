@@ -3,13 +3,28 @@ import path from "path";
 import prompts from "prompts";
 import ora from "ora";
 import { loadConfig } from "tsconfig-paths";
+import { execa } from "execa";
 import { Command } from "commander";
 
 import { handleError } from "@/utils/handle-error";
 import { logger } from "@/utils/logger";
 import { resolveImport } from "@/utils/resolve-import";
 
-import { getThemes } from "@/utils/api";
+import { getThemes, getInitData } from "@/utils/api";
+
+export type Config = {
+  theme: {
+    name: string;
+    css: string;
+  };
+  alias: {
+    components: string;
+  };
+  resolvedPaths: {
+    components: string;
+    css: string;
+  };
+};
 
 export const init = new Command()
   .name("init")
@@ -30,13 +45,13 @@ export const init = new Command()
         process.exit(1);
       }
 
-      // Check for an existing atomic.components.js file at cwd
-
       const projectConfig = await promptForProjectDetails(cwd);
       logger.info(
         "Project configuration saved to atomic.components.json",
         JSON.stringify(projectConfig)
       );
+
+      await runInit(cwd, projectConfig);
     } catch (error) {
       handleError(error);
     }
@@ -107,101 +122,32 @@ async function promptForProjectDetails(cwd: string) {
   return {
     ...atomicComponentsConfig,
     resolvedPaths: {
-      components: await resolveImport(options.components, tsConfig),
+      components: (await resolveImport(options.components, tsConfig)) as string,
+      css: path.resolve(cwd, options.globalCSS),
     },
   };
 }
 
 export async function runInit(cwd: string, config: Config) {
-  const spinner = ora(`Initializing project...`)?.start();
+  const spinner = ora(`Initializing project...`).start();
 
-  // Ensure all resolved paths directories exist.
-  for (const [key, resolvedPath] of Object.entries(config.resolvedPaths)) {
-    // Determine if the path is a file or directory.
-    // TODO: is there a better way to do this?
-    let dirname = path.extname(resolvedPath)
-      ? path.dirname(resolvedPath)
-      : resolvedPath;
-
-    // If the utils alias is set to something like "@/lib/utils",
-    // assume this is a file and remove the "utils" file name.
-    // TODO: In future releases we should add support for individual utils.
-    if (key === "utils" && resolvedPath.endsWith("/utils")) {
-      // Remove /utils at the end.
-      dirname = dirname.replace(/\/utils$/, "");
-    }
-
-    if (!existsSync(dirname)) {
-      await fs.mkdir(dirname, { recursive: true });
-    }
+  if (!existsSync(config.resolvedPaths.components)) {
+    await fs.mkdir(config.resolvedPaths.components, { recursive: true });
   }
 
-  const extension = config.tsx ? "ts" : "js";
+  const initData = await getInitData({
+    theme: config.theme.name,
+  });
 
-  const tailwindConfigExtension = path.extname(
-    config.resolvedPaths.tailwindConfig
-  );
+  // Write global CSS file.
+  await fs.writeFile(config.resolvedPaths.css, initData.css, "utf8");
 
-  let tailwindConfigTemplate: string;
-  if (tailwindConfigExtension === ".ts") {
-    tailwindConfigTemplate = config.tailwind.cssVariables
-      ? templates.TAILWIND_CONFIG_TS_WITH_VARIABLES
-      : templates.TAILWIND_CONFIG_TS;
-  } else {
-    tailwindConfigTemplate = config.tailwind.cssVariables
-      ? templates.TAILWIND_CONFIG_WITH_VARIABLES
-      : templates.TAILWIND_CONFIG;
-  }
-
-  // Write tailwind config.
-  await fs.writeFile(
-    config.resolvedPaths.tailwindConfig,
-    template(tailwindConfigTemplate)({
-      extension,
-      prefix: config.tailwind.prefix,
-    }),
-    "utf8"
-  );
-
-  // Write css file.
-  const baseColor = await getRegistryBaseColor(config.tailwind.baseColor);
-  if (baseColor) {
-    await fs.writeFile(
-      config.resolvedPaths.tailwindCss,
-      config.tailwind.cssVariables
-        ? config.tailwind.prefix
-          ? applyPrefixesCss(baseColor.cssVarsTemplate, config.tailwind.prefix)
-          : baseColor.cssVarsTemplate
-        : baseColor.inlineColorsTemplate,
-      "utf8"
-    );
-  }
-
-  // Write cn file.
-  await fs.writeFile(
-    `${config.resolvedPaths.utils}.${extension}`,
-    extension === "ts" ? templates.UTILS : templates.UTILS_JS,
-    "utf8"
-  );
-
-  spinner?.succeed();
+  spinner.succeed();
 
   // Install dependencies.
-  const dependenciesSpinner = ora(`Installing dependencies...`)?.start();
-  const packageManager = await getPackageManager(cwd);
+  const dependenciesSpinner = ora(`Installing dependencies...`).start();
 
-  // TODO: add support for other icon libraries.
-  const deps = [
-    ...PROJECT_DEPENDENCIES,
-    config.style === "new-york" ? "@radix-ui/react-icons" : "lucide-react",
-  ];
-
-  await execa(
-    packageManager,
-    [packageManager === "npm" ? "install" : "add", ...deps],
-    {
-      cwd,
-    }
-  );
-  dependenciesSpinner?.succeed();
+  // Todo: support npm and other package managers.
+  await execa("yarn", ["add", ...initData.dependencies]);
+  dependenciesSpinner.succeed();
 }

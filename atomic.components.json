@@ -1,9 +1,0 @@
-{
-  "theme": {
-    "name": "theme1",
-    "css": "app/globals.css"
-  },
-  "alias": {
-    "components": "@/atomic-ui-components"
-  }
-}
