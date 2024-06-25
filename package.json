@@ -21,7 +21,8 @@
     "commander": "^12.1.0",
     "fs-extra": "^11.2.0",
     "ora": "^8.0.1",
-    "prompts": "^2.4.2"
+    "prompts": "^2.4.2",
+    "tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
     "@types/commander": "^2.12.2",
