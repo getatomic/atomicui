@@ -9,7 +9,7 @@
   "type": "module",
   "exports": "./dist/index.js",
   "bin": {
-    "atomicui": "./dist/index.js"
+    "atomic": "./dist/index.js"
   },
   "scripts": {
     "dev": "tsup --watch",
