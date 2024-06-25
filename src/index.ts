@@ -2,6 +2,7 @@
 import { Command } from "commander";
 
 import { init } from "@/commands/init";
+import { add } from "@/commands/add";
 import { getPackageInfo } from "@/utils/get-package-info";
 import { logger } from "@/utils/logger";
 
@@ -23,7 +24,7 @@ async function main() {
       logger.info("Starting Atomic UI");
     });
 
-  program.addCommand(init);
+  program.addCommand(init).addCommand(add);
 
   program.parse(process.argv);
 }

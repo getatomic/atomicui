@@ -1,30 +1,15 @@
 import { existsSync, promises as fs } from "fs";
-import path from "path";
+import path, { resolve } from "path";
 import prompts from "prompts";
 import ora from "ora";
-import { loadConfig } from "tsconfig-paths";
 import { execa } from "execa";
 import { Command } from "commander";
 
 import { handleError } from "@/utils/handle-error";
 import { logger } from "@/utils/logger";
-import { resolveImport } from "@/utils/resolve-import";
+import { resolveConfigPaths, Config } from "@/utils/get-config";
 
 import { getThemes, getInitData } from "@/utils/api";
-
-interface Config {
-  theme: {
-    name: string;
-    css: string;
-  };
-  alias: {
-    components: string;
-  };
-  resolvedPaths: {
-    components: string;
-    css: string;
-  };
-}
 
 export const init = new Command()
   .name("init")
@@ -59,11 +44,6 @@ export const init = new Command()
 
 async function promptForProjectDetails(cwd: string) {
   const themes = await getThemes();
-  const tsConfig = await loadConfig(cwd);
-
-  if (tsConfig.resultType === "failed") {
-    throw new Error(`Failed to load tsconfig.json`);
-  }
 
   const options = await prompts([
     {
@@ -119,13 +99,7 @@ async function promptForProjectDetails(cwd: string) {
   );
   spinner.succeed();
 
-  return {
-    ...atomicComponentsConfig,
-    resolvedPaths: {
-      components: (await resolveImport(options.components, tsConfig)) as string,
-      css: path.resolve(cwd, options.globalCSS),
-    },
-  };
+  return resolveConfigPaths(cwd, atomicComponentsConfig as Config);
 }
 
 export async function runInit(cwd: string, config: Config) {
