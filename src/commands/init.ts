@@ -12,7 +12,7 @@ import { resolveImport } from "@/utils/resolve-import";
 
 import { getThemes, getInitData } from "@/utils/api";
 
-export type Config = {
+interface Config {
   theme: {
     name: string;
     css: string;
@@ -24,7 +24,7 @@ export type Config = {
     components: string;
     css: string;
   };
-};
+}
 
 export const init = new Command()
   .name("init")
