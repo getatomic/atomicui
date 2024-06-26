@@ -1,18 +1,16 @@
-export const baseUrl = "https://app.getatomic.ai/api/registry/";
+import { init } from "../../commands/init";
+export const baseUrl = "http://localhost:3000/api/";
 
 interface Theme {
+  id: string;
   name: string;
 }
 
 export const getThemes = async (): Promise<Theme[]> => {
   try {
-    return new Promise<Theme[]>((resolve) => {
-      setTimeout(() => {
-        resolve([{ name: "theme1" }, { name: "theme2" }, { name: "theme3" }]);
-      }, 1000);
-    });
-    // const response = await fetch(`${baseUrl}/themes`);
-    // return await response.json();
+    const response = await fetch(`${baseUrl}/themes/list`);
+    const themes: Theme[] = await response.json();
+    return themes;
   } catch (error) {
     throw new Error(`Failed to fetch themes.`);
   }
@@ -23,16 +21,21 @@ interface InitData {
   dependencies: string[];
 }
 
-export const getInitData = async ({ theme }: { theme: string }) => {
+export const getInitData = async ({
+  theme,
+}: {
+  theme: string;
+}): Promise<InitData> => {
   try {
-    console.log("theme", theme);
-    return new Promise<InitData>((resolve) => {
-      setTimeout(() => {
-        resolve({ css: "css", dependencies: ["classnames", "formik"] });
-      }, 1000);
+    const response = await fetch(`${baseUrl}/user-setup/init`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ themeId: theme }),
     });
-    // const response = await fetch(`${baseUrl}/init`);
-    // return await response.json();
+    const initData: InitData = await response.json();
+    return initData;
   } catch (error) {
     throw new Error(`Failed to fetch init data.`);
   }

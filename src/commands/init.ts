@@ -52,7 +52,7 @@ async function promptForProjectDetails(cwd: string) {
       message: `Which theme would you like to use?`,
       choices: themes.map((theme) => ({
         title: theme.name,
-        value: theme.name,
+        value: theme.id,
       })),
     },
     {
@@ -121,7 +121,12 @@ export async function runInit(cwd: string, config: Config) {
   // Install dependencies.
   const dependenciesSpinner = ora(`Installing dependencies...`).start();
 
-  // Todo: support npm and other package managers.
-  await execa("yarn", ["add", ...initData.dependencies]);
+  if (initData.dependencies.length === 0) {
+    logger.info("No dependencies to install.");
+  } else {
+    // Todo: support npm and other package managers.
+    await execa("yarn", ["add", ...initData.dependencies]);
+  }
+
   dependenciesSpinner.succeed();
 }
