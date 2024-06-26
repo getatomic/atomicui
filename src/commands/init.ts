@@ -32,7 +32,7 @@ export const init = new Command()
 
       const projectConfig = await promptForProjectDetails(cwd);
       logger.info(
-        "Project configuration saved to atomic.components.json",
+        "Project configuration saved to getatomic.components.json",
         JSON.stringify(projectConfig)
       );
 
@@ -65,7 +65,7 @@ async function promptForProjectDetails(cwd: string) {
       type: "text",
       name: "components",
       message: `Configure the import alias for the atomic components.`,
-      initial: "@/atomic-ui-components",
+      initial: "@/components/getatomic",
     },
   ]);
 
@@ -82,7 +82,7 @@ async function promptForProjectDetails(cwd: string) {
   const { proceed } = await prompts({
     type: "confirm",
     name: "proceed",
-    message: `Write configuration to "atomic.components.json". Proceed?`,
+    message: `Write configuration to "getatomic.components.json". Proceed?`,
     initial: true,
   });
 
@@ -90,8 +90,8 @@ async function promptForProjectDetails(cwd: string) {
     process.exit(0);
   }
 
-  const spinner = ora(`Writing atomic.components.json...`).start();
-  const targetPath = path.resolve(cwd, "atomic.components.json");
+  const spinner = ora(`Writing getatomic.components.json...`).start();
+  const targetPath = path.resolve(cwd, "getatomic.components.json");
   await fs.writeFile(
     targetPath,
     JSON.stringify(atomicComponentsConfig, null, 2),

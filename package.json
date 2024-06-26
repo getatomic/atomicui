@@ -1,20 +1,29 @@
 {
-  "name": "atomicui",
+  "name": "getatomic",
   "version": "1.0.0",
-  "volta": {
-    "node": "20.15.0"
+  "author": {
+    "name": "Senantix Inc.",
+    "url": "https://getatomic.ai"
   },
-  "main": "index.js",
-  "license": "MIT",
-  "type": "module",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/senantix/atomicui"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "AI",
+    "ui",
+    "atomic"
+  ],
   "exports": "./dist/index.js",
-  "bin": {
-    "atomic": "./dist/index.js"
-  },
+  "type": "module",
+  "bin": "./dist/index.js",
   "scripts": {
-    "dev": "tsup --watch",
-    "build": "tsup",
-    "typecheck": "tsc --noEmit"
+    "build": "rollup -c",
+    "watch": "rollup -c -w"
   },
   "dependencies": {
     "chalk": "^5.3.0",
@@ -26,12 +35,15 @@
     "tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.6",
     "@types/commander": "^2.12.2",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^20.14.8",
+    "@types/node": "^20.14.9",
     "@types/prompts": "^2.4.9",
+    "rollup": "^4.18.0",
     "ts-node": "^10.9.2",
-    "tsup": "^8.1.0",
+    "tsc-alias": "^1.8.10",
+    "tslib": "^2.6.3",
     "type-fest": "^4.20.1",
     "typescript": "^5.5.2"
   }

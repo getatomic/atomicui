@@ -18,7 +18,7 @@ export interface Config {
 }
 
 export const getConfig = async (cwd: string) => {
-  const configPath = path.resolve(cwd, "atomic.components.json");
+  const configPath = path.resolve(cwd, "getatomic.components.json");
   const configExists = fs.existsSync(configPath);
   if (!configExists) {
     return null;

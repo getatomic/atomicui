@@ -1,9 +1,5 @@
 import { existsSync, promises as fs } from "fs";
 import path from "path";
-import prompts from "prompts";
-import ora from "ora";
-import { loadConfig } from "tsconfig-paths";
-import { execa } from "execa";
 import { Command } from "commander";
 
 import { handleError } from "@/utils/handle-error";
@@ -35,7 +31,7 @@ export const add = new Command()
       const config = await getConfig(cwd);
       if (!config) {
         logger.warn(
-          `Configuration is missing. Please run "init" to create a atomic.components.json file.`
+          `Configuration is missing. Please run "init" to create a getatomic.components.json file.`
         );
         process.exit(1);
       }

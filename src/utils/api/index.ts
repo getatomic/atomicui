@@ -1,4 +1,4 @@
-export const baseUrl = "https://atomic-toy.azurewebsites.net/api/registry/";
+export const baseUrl = "https://app.getatomic.ai/api/registry/";
 
 interface Theme {
   name: string;
