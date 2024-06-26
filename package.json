@@ -1,6 +1,6 @@
 {
   "name": "getatomic",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
     "name": "Senantix Inc.",
     "url": "https://getatomic.ai"
@@ -34,9 +34,12 @@
     "fs-extra": "^11.2.0",
     "ora": "^8.0.1",
     "prompts": "^2.4.2",
+    "react-aria-components": "^1.2.1",
     "tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^5.0.7",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/commander": "^2.12.2",
     "@types/fs-extra": "^11.0.4",

@@ -12,7 +12,6 @@ interface Theme {
 
 export const getThemes = async (): Promise<Theme[]> => {
   try {
-    console.log(baseUrl)
     const response = await fetch(`${baseUrl}/themes/list`);
     return (await response.json()) as Theme[];
   } catch (error) {
@@ -44,11 +43,10 @@ export const getInitData = async ({
   }
 };
 
-interface Component {
+export interface Component {
   name: string;
   dependentComponents: string[];
   dependencies: string[];
-  devDependencies: string[];
   subFolder: string;
   tsx: {
     name: string;
@@ -58,6 +56,7 @@ interface Component {
     name: string;
     fileData: string;
   };
+  exports: { name: string; type: string }[]
 }
 
 interface GetComponentsDataResponse {
