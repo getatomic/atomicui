@@ -1,4 +1,3 @@
-import { init } from "../../commands/init";
 export const baseUrl = "http://localhost:3000/api/";
 
 interface Theme {
