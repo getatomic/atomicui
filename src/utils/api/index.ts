@@ -37,3 +37,44 @@ export const getInitData = async ({
     throw new Error(`Failed to fetch init data.`);
   }
 };
+
+interface Component {
+  name: string;
+  dependentComponents: string[];
+  dependencies: string[];
+  devDependencies: string[];
+  subFolder: string;
+  tsx: {
+    name: string;
+    fileData: string;
+  };
+  css: {
+    name: string;
+    fileData: string;
+  };
+}
+
+interface GetComponentsDataResponse {
+  components: Component[];
+}
+
+export const getComponentsData = async ({
+  componentId,
+  alias,
+}: {
+  componentId: string;
+  alias: string;
+}): Promise<GetComponentsDataResponse> => {
+  try {
+    const response = await fetch(`${baseUrl}/user-setup/add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: componentId, alias }),
+    });
+    return (await response.json()) as GetComponentsDataResponse;
+  } catch (error) {
+    throw new Error(`Failed to fetch init data.`);
+  }
+};
