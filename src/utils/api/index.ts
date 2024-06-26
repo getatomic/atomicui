@@ -1,4 +1,9 @@
-export const baseUrl = "http://localhost:3000/api/";
+let baseUrl: string;
+if (process.env.NODE_ENV === "development") {
+  baseUrl = "http://localhost:3000/api/";
+} else {
+  baseUrl = "https://app.getatomic.ai/api/";
+}
 
 interface Theme {
   id: string;
@@ -25,7 +30,7 @@ export const getInitData = async ({
   theme: string;
 }): Promise<InitData> => {
   try {
-    const response = await fetch(`${baseUrl}/user-setup/init`, {
+    const response = await fetch(`${baseUrl}/codebase-integration/init`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -66,7 +71,7 @@ export const getComponentsData = async ({
   alias: string;
 }): Promise<GetComponentsDataResponse> => {
   try {
-    const response = await fetch(`${baseUrl}/user-setup/add`, {
+    const response = await fetch(`${baseUrl}/codebase-integration/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

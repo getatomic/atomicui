@@ -113,7 +113,10 @@ export async function runInit(cwd: string, config: Config) {
     theme: config.theme.name,
   });
 
-  // Write global CSS file.
+  // Write global CSS file. Create path if it doesn't exist.
+  if (!existsSync(config.resolvedPaths.css)) {
+    await fs.mkdir(path.dirname(config.resolvedPaths.css), { recursive: true });
+  }
   await fs.writeFile(config.resolvedPaths.css, initData.css, "utf8");
 
   spinner.succeed();
