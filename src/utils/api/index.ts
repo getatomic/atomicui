@@ -9,8 +9,7 @@ interface Theme {
 export const getThemes = async (): Promise<Theme[]> => {
   try {
     const response = await fetch(`${baseUrl}/themes/list`);
-    const themes: Theme[] = await response.json();
-    return themes;
+    return (await response.json()) as Theme[];
   } catch (error) {
     throw new Error(`Failed to fetch themes.`);
   }
@@ -34,8 +33,7 @@ export const getInitData = async ({
       },
       body: JSON.stringify({ themeId: theme }),
     });
-    const initData: InitData = await response.json();
-    return initData;
+    return (await response.json()) as InitData;
   } catch (error) {
     throw new Error(`Failed to fetch init data.`);
   }
