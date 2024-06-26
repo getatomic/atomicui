@@ -31,7 +31,7 @@ export const add = new Command()
       const config = await getConfig(cwd);
       if (!config) {
         logger.warn(
-          `Configuration is missing. Please run "init" to create a atomicui.components.json file.`
+          `Configuration is missing. Please run "init" to create a getatomic.components.json file.`
         );
         process.exit(1);
       }
