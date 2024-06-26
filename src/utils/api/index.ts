@@ -12,10 +12,11 @@ interface Theme {
 
 export const getThemes = async (): Promise<Theme[]> => {
   try {
+    console.log(baseUrl)
     const response = await fetch(`${baseUrl}/themes/list`);
     return (await response.json()) as Theme[];
   } catch (error) {
-    throw new Error(`Failed to fetch themes.`);
+    throw new Error(`Failed to fetch themes. ${error}`);
   }
 };
 
