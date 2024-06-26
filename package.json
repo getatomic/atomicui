@@ -1,0 +1,38 @@
+{
+  "name": "atomicui",
+  "version": "1.0.0",
+  "volta": {
+    "node": "20.15.0"
+  },
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "bin": {
+    "atomic": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "execa": "^9.3.0",
+    "fs-extra": "^11.2.0",
+    "ora": "^8.0.1",
+    "prompts": "^2.4.2",
+    "tsconfig-paths": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/commander": "^2.12.2",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.14.8",
+    "@types/prompts": "^2.4.9",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.1.0",
+    "type-fest": "^4.20.1",
+    "typescript": "^5.5.2"
+  }
+}
