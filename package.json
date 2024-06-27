@@ -34,7 +34,6 @@
     "fs-extra": "^11.2.0",
     "ora": "^8.0.1",
     "prompts": "^2.4.2",
-    "react-aria-components": "^1.2.1",
     "tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
