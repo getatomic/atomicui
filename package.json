@@ -1,6 +1,6 @@
 {
   "name": "getatomic",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
     "name": "Senantix Inc.",
     "url": "https://getatomic.ai"
@@ -22,8 +22,10 @@
   "type": "module",
   "bin": "./dist/index.js",
   "scripts": {
-    "build": "rollup -c",
-    "watch": "rollup -c -w"
+    "build": "NODE_ENV=production rollup -c",
+    "watch": "NODE_ENV=production rollup -c -w",
+    "build:dev": "rollup -c",
+    "watch:dev": "rollup -c -w"
   },
   "dependencies": {
     "chalk": "^5.3.0",
@@ -35,6 +37,8 @@
     "tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^5.0.7",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/commander": "^2.12.2",
     "@types/fs-extra": "^11.0.4",
@@ -46,5 +50,8 @@
     "tslib": "^2.6.3",
     "type-fest": "^4.20.1",
     "typescript": "^5.5.2"
+  },
+  "volta": {
+    "node": "20.15.0"
   }
 }

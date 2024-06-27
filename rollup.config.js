@@ -1,15 +1,20 @@
-import typescript from '@rollup/plugin-typescript';
+import typescript from "@rollup/plugin-typescript";
+import replace from '@rollup/plugin-replace';
 
 export default {
-	input: './src/index.ts',
-	output: {
-	  dir: './dist',
-	  format: 'es'
-	},
-	plugins: [typescript({
-		compilerOptions: {
-			lib:["es5", "es6"],
-			target: "es6"
-		}
-	})]
+  input: "./src/index.ts",
+  cache: false,
+  output: {
+    dir: "./dist",
+    format: "es",
+  },
+  plugins: [
+    typescript({
+      tsconfig: "tsconfig.json",
+    }),
+    replace({
+      "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || 'development'),
+      preventAssignment: true,
+    }),
+  ],
 };
