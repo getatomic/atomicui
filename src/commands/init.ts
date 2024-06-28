@@ -7,6 +7,7 @@ import { Command } from "commander";
 
 import { handleError } from "@/utils/handle-error";
 import { logger } from "@/utils/logger";
+import { getPackageManager } from "@/utils/get-package-info";
 import { resolveConfigPaths, Config } from "@/utils/get-config";
 
 import { getThemes, getInitData } from "@/utils/api";
@@ -20,6 +21,7 @@ export const init = new Command()
     process.cwd()
   )
   .action(async (options) => {
+    const cwd = path.resolve(options.cwd);
     try {
       logger.info("Initializing Atomic UI");
       const cwd = path.resolve(options.cwd);
@@ -39,6 +41,11 @@ export const init = new Command()
       await runInit(cwd, projectConfig);
     } catch (error) {
       handleError(error);
+      // delete atomic.components.json if it exists
+      const configPath = path.resolve(cwd, "getatomic.components.json");
+      if (existsSync(configPath)) {
+        await fs.unlink(configPath);
+      }
     }
   });
 
@@ -79,6 +86,20 @@ async function promptForProjectDetails(cwd: string) {
     },
   };
 
+  const resolvedConfig = await resolveConfigPaths(
+    cwd,
+    atomicComponentsConfig as Config
+  );
+
+  if (
+    resolvedConfig.resolvedPaths.components === "" ||
+    resolvedConfig.resolvedPaths.css === ""
+  ) {
+    throw new Error(
+      `Failed to resolve components alias, please enter a valid alias.`
+    );
+  }
+
   const { proceed } = await prompts({
     type: "confirm",
     name: "proceed",
@@ -99,7 +120,7 @@ async function promptForProjectDetails(cwd: string) {
   );
   spinner.succeed();
 
-  return resolveConfigPaths(cwd, atomicComponentsConfig as Config);
+  return resolvedConfig;
 }
 
 export async function runInit(cwd: string, config: Config) {
@@ -121,15 +142,21 @@ export async function runInit(cwd: string, config: Config) {
 
   spinner.succeed();
 
-  // Install dependencies.
-  const dependenciesSpinner = ora(`Installing dependencies...`).start();
-
   if (initData.dependencies.length === 0) {
     logger.info("No dependencies to install.");
   } else {
-    // Todo: support npm and other package managers.
-    await execa("yarn", ["add", ...initData.dependencies]);
-  }
+    const dependenciesSpinner = ora(`Installing dependencies...`).start();
 
-  dependenciesSpinner.succeed();
+    const packageManager = await getPackageManager(cwd);
+    await execa(
+      packageManager,
+      [packageManager === "npm" ? "install" : "add", ...initData.dependencies],
+      {
+        cwd,
+        stdio: "inherit",
+      }
+    );
+
+    dependenciesSpinner.succeed();
+  }
 }

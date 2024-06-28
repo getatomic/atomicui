@@ -3,14 +3,14 @@ import {
   type ConfigLoaderSuccessResult,
 } from "tsconfig-paths";
 
-export async function resolveImport(
+export const resolveImport = async (
   importPath: string,
   config: Pick<ConfigLoaderSuccessResult, "absoluteBaseUrl" | "paths">
-) {
-  return createMatchPath(config.absoluteBaseUrl, config.paths)(
-    importPath,
+) => {
+  return createMatchPath(
+    config.absoluteBaseUrl,
+    config.paths,
     undefined,
-    () => true,
-    [".ts", ".tsx"]
-  );
-}
+    false
+  )(importPath, undefined, () => true, [".ts", ".tsx"]);
+};

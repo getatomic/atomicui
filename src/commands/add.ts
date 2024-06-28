@@ -7,6 +7,7 @@ import { execa } from "execa";
 import { handleError } from "@/utils/handle-error";
 import { logger } from "@/utils/logger";
 import { getConfig } from "@/utils/get-config";
+import { getPackageManager } from "@/utils/get-package-info";
 
 import { Component, getComponentsData } from "@/utils/api";
 
@@ -33,8 +34,9 @@ export const add = new Command()
       const config = await getConfig(cwd);
       if (!config) {
         logger.warn(
-          `Configuration is missing. Please run "init" to create a getatomic.components.json file.`
+          `Configuration is missing. Please run the following command to create a atomic.components.json file. \n`
         );
+        logger.warn(`\tnpx v0@latest init \n`);
         process.exit(1);
       }
 
@@ -50,11 +52,16 @@ export const add = new Command()
           for (const component of fetchedComponents) {
             componentsToAdd.set(component.name, component);
             for (const dep of component.dependencies) {
-              dependenciesToInstall.add(dep);
+              if (dep === "react" || dep === "react-dom") {
+                continue;
+              }
+              dependenciesToInstall.add(dep.split("/")[0]);
             }
           }
         } catch (error: any) {
-          logger.error(`Failed to fetch component data for ${componentId}: ${error}`);
+          logger.error(
+            `Failed to fetch component data for ${componentId}: ${error}`
+          );
           continue;
         }
       }
@@ -62,19 +69,29 @@ export const add = new Command()
       const componentsToAddArray = Array.from(componentsToAdd.values());
       const dependenciesToInstallArray = Array.from(dependenciesToInstall);
 
+      console.log(
+        "dependenciesToInstallArray",
+        JSON.stringify(dependenciesToInstallArray, null, 2)
+      );
+
       // install dependencies
       let spinner = ora(`Installing dependencies...`).start();
-      const filteredDependencies = dependenciesToInstallArray
-        .filter((deps) => deps !== "react" && deps !== "react-dom")
-        .map((dep) => `${dep.split("/")[0]}`);
-      logger.info(
-        `Installing dependencies: ${filteredDependencies.join(", ")}`
-      );
-      if (filteredDependencies.length === 0) {
+      logger.info(`${dependenciesToInstallArray.join(", ")}`);
+      if (dependenciesToInstallArray.length === 0) {
         logger.info("No dependencies to install.");
       } else {
-        // Todo: support npm and other package managers.
-        await execa("yarn", ["add", ...filteredDependencies]);
+        const packageManager = await getPackageManager(cwd);
+        await execa(
+          packageManager,
+          [
+            packageManager === "npm" ? "install" : "add",
+            ...dependenciesToInstallArray,
+          ],
+          {
+            cwd,
+            stdio: "inherit",
+          }
+        );
       }
       spinner.succeed();
 
@@ -100,7 +117,9 @@ export const add = new Command()
         }
 
         if (existsSync(componentFilePath)) {
-          logger.warn(`Component ${component.tsx.name}.tsx already exists. Skipping.`);
+          logger.warn(
+            `Component ${component.tsx.name}.tsx already exists. Skipping.`
+          );
           // Todo: We can ask the user to overwrite the file.
           // continue;
         } else {
@@ -108,7 +127,9 @@ export const add = new Command()
         }
 
         if (existsSync(componentCssFilePath)) {
-          logger.warn(`Component ${component.css.name} already exists. Skipping.`);
+          logger.warn(
+            `Component ${component.css.name} already exists. Skipping.`
+          );
           // Todo: We can ask the user to overwrite the file.
           // continue;
         } else {
@@ -119,22 +140,24 @@ export const add = new Command()
           logger.warn(`Component index.ts already exists. Skipping.`);
         } else {
           const exportStatements: string[] = component.exports.map((exp) => {
-            if (exp.type === "TSInterfaceDeclaration" || exp.type === "TSTypeAliasDeclaration") {
-              return `export type { ${exp.name} as ${exp.name} } from "./${component.tsx.name}";`
+            if (
+              exp.type === "TSInterfaceDeclaration" ||
+              exp.type === "TSTypeAliasDeclaration"
+            ) {
+              return `export type { ${exp.name} as ${exp.name} } from "./${component.tsx.name}";`;
             } else {
-              return `export { ${exp.name} as ${exp.name} } from "./${component.tsx.name}";`
+              return `export { ${exp.name} as ${exp.name} } from "./${component.tsx.name}";`;
             }
           });
-          await fs.writeFile(
-            indexFilePath,
-            exportStatements.join("\n"),
-          );
+          await fs.writeFile(indexFilePath, exportStatements.join("\n"));
         }
 
-        // addint to block/index.ts.
-        const block = component.name.split("/")[0]
+        // adding to block/index.ts.
+        const block = component.name.split("/")[0];
         if (block !== component.subFolder) {
-          logger.warn(`Block ${block} is not the same as the subfolder ${component.subFolder}.`);
+          logger.warn(
+            `Block ${block} is not the same as the subfolder ${component.subFolder}.`
+          );
         }
         const blockIndexPath = path.join(
           config.resolvedPaths.components,
