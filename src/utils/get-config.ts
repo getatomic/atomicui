@@ -40,10 +40,8 @@ export const resolveConfigPaths = async (cwd: string, config: Config) => {
   return {
     ...config,
     resolvedPaths: {
-      components: (await resolveImport(
-        config.alias.components,
-        tsConfig
-      )) as string,
+      components:
+        (await resolveImport(config.alias.components, tsConfig)) || "",
       css: path.resolve(cwd, config.theme.css),
     },
   };

@@ -1,6 +1,6 @@
 {
   "name": "getatomic",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": {
     "name": "Senantix Inc.",
     "url": "https://getatomic.ai"
@@ -28,6 +28,7 @@
     "watch:dev": "rollup -c -w"
   },
   "dependencies": {
+    "@antfu/ni": "^0.21.12",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "execa": "^9.3.0",
