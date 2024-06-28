@@ -3,15 +3,29 @@ import fs from "fs-extra";
 import { type PackageJson } from "type-fest";
 import { detect } from "@antfu/ni";
 
-export function getPackageInfo() {
+export const getPackageInfo = () => {
   const packageJsonPath = path.join("package.json");
 
   return fs.readJSONSync(packageJsonPath) as PackageJson;
-}
+};
 
-export async function getPackageManager(
+export const checkPackageExists = (
+  packageName: string,
+  cwd: string
+): boolean => {
+  try {
+    const packageJsonPath = path.resolve(cwd, "package.json");
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
+    return !!Object.keys(packageJson.dependencies || {}).includes(packageName);
+  } catch (error) {
+    console.error(`Error reading package.json: ${error}`);
+    return false;
+  }
+};
+
+export const getPackageManager = async (
   targetDir: string
-): Promise<"yarn" | "pnpm" | "bun" | "npm"> {
+): Promise<"yarn" | "pnpm" | "bun" | "npm"> => {
   const packageManager = await detect({ programmatic: true, cwd: targetDir });
 
   if (packageManager === "yarn@berry") return "yarn";
@@ -19,4 +33,4 @@ export async function getPackageManager(
   if (packageManager === "bun") return "bun";
 
   return packageManager ?? "npm";
-}
+};
