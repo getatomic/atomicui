@@ -145,7 +145,8 @@ export async function runInit(cwd: string, config: Config) {
   if (initData.dependencies.length === 0) {
     logger.info("No dependencies to install.");
   } else {
-    const dependenciesSpinner = ora(`Installing dependencies...`).start();
+    const dependenciesSpinner = ora("").start();
+    logger.info("Installing dependencies...");
 
     const packageManager = await getPackageManager(cwd);
     await execa(

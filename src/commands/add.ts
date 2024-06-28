@@ -75,11 +75,11 @@ export const add = new Command()
       );
 
       // install dependencies
-      let spinner = ora(`Installing dependencies...`).start();
-      logger.info(`${dependenciesToInstallArray.join(", ")}`);
+      let spinner = ora("").start();
       if (dependenciesToInstallArray.length === 0) {
         logger.info("No dependencies to install.");
       } else {
+        logger.info("Installing dependencies...");
         const packageManager = await getPackageManager(cwd);
         await execa(
           packageManager,
