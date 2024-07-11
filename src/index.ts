@@ -11,7 +11,7 @@ process.on("SIGTERM", () => process.exit(0));
 async function main() {
   const packageInfo = await getPackageInfo();
 
-  const programatomic = new Command()
+  const program = new Command()
     .name("atomic")
     .description("Add components and dependencies to your project")
     .version(
