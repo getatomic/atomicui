@@ -3,7 +3,7 @@
 ## Initialise Atomic
 Run the following command to initialize the project for Atomic:
 ```
-npx getatomic init
+npx atomic init
 ```
 
 You will be prompted with a series of questions to configure your project:
@@ -15,7 +15,7 @@ You will be prompted with a series of questions to configure your project:
 
 3. **Configure Import Alias**: Choose the default alias by pressing Enter or customize it. To customize, locate your `tsconfig.json` file and find the alias under the "paths" section. <br/> Example: **@[your_alias]/atomic-ui.**
 
-4. **Save Configuration**: Confirm writing the configuration to getatomic.components.json by pressing the letter "y" on your keyboard.
+4. **Save Configuration**: Confirm writing the configuration to atomic.components.json by pressing the letter "y" on your keyboard.
 
 
 You are now ready to add Atomic components to your project.
@@ -32,7 +32,7 @@ To start using Atomic components in your application:
 
 
 ```
-npx getatomic add [componentName]
+npx atomic add [componentName]
 ``` 
 
 4. The command will add all the code and dependencies required to start using the component in the configured directory.  
