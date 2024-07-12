@@ -36,7 +36,7 @@ export const add = new Command()
         logger.warn(
           `Configuration is missing. Please run the following command to create a atomic.components.json file. \n`
         );
-        logger.warn(`\tnpx getatomic init \n`);
+        logger.warn(`\tnpx atomic init \n`);
         process.exit(1);
       }
 

@@ -60,13 +60,13 @@ export const init = new Command()
       spinner.succeed();
 
       const projectConfig = await promptForProjectDetails(cwd);
-      logger.info("Project configuration saved to getatomic.components.json");
+      logger.info("Project configuration saved to atomic.components.json");
 
       await runInit(cwd, projectConfig);
     } catch (error) {
       handleError(error);
       // delete atomic.components.json if it exists
-      const configPath = path.resolve(cwd, "getatomic.components.json");
+      const configPath = path.resolve(cwd, "atomic.components.json");
       if (existsSync(configPath)) {
         await fs.unlink(configPath);
       }
@@ -97,7 +97,7 @@ async function promptForProjectDetails(cwd: string) {
         type: "text",
         name: "components",
         message: `Configure the import alias for the atomic components.`,
-        initial: "@/components/getatomic",
+        initial: "@/components/atomic",
       },
     ],
     {
@@ -134,7 +134,7 @@ async function promptForProjectDetails(cwd: string) {
   const { proceed } = await prompts({
     type: "confirm",
     name: "proceed",
-    message: `Write configuration to "getatomic.components.json". Proceed?`,
+    message: `Write configuration to "atomic.components.json". Proceed?`,
     initial: true,
   });
 
@@ -142,8 +142,8 @@ async function promptForProjectDetails(cwd: string) {
     process.exit(0);
   }
 
-  const spinner = ora(`Writing getatomic.components.json...`).start();
-  const targetPath = path.resolve(cwd, "getatomic.components.json");
+  const spinner = ora(`Writing atomic.components.json...`).start();
+  const targetPath = path.resolve(cwd, "atomic.components.json");
   await fs.writeFile(
     targetPath,
     JSON.stringify(atomicComponentsConfig, null, 2),

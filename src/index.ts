@@ -12,7 +12,7 @@ async function main() {
   const packageInfo = await getPackageInfo();
 
   const program = new Command()
-    .name("getatomic")
+    .name("atomic")
     .description("Add components and dependencies to your project")
     .version(
       packageInfo.version || "1.0.0",
