@@ -5,7 +5,6 @@ import { resolveImport } from "@/utils/resolve-import";
 
 export interface Config {
   theme: {
-    name: string;
     css: string;
   };
   alias: {
@@ -40,8 +39,7 @@ export const resolveConfigPaths = async (cwd: string, config: Config) => {
   return {
     ...config,
     resolvedPaths: {
-      components:
-        (await resolveImport(config.alias.components, tsConfig)) || "",
+      components: (await resolveImport(config.alias.components, tsConfig)) || "",
       css: path.resolve(cwd, config.theme.css),
     },
   };
