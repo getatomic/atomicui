@@ -24,18 +24,13 @@ interface InitData {
   dependencies: string[];
 }
 
-export const getInitData = async ({
-  theme,
-}: {
-  theme: string;
-}): Promise<InitData> => {
+export const getInitData = async (): Promise<InitData> => {
   try {
     const response = await fetch(`${baseUrl}/codebase-integration/init`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ themeId: theme }),
     });
     return (await response.json()) as InitData;
   } catch (error) {
@@ -45,18 +40,10 @@ export const getInitData = async ({
 
 export interface Component {
   name: string;
-  dependentComponents: string[];
-  dependencies: string[];
-  subFolder: string;
   tsx: {
     name: string;
     fileData: string;
   };
-  css: {
-    name: string;
-    fileData: string;
-  };
-  exports: { name: string; type: string }[]
 }
 
 interface GetComponentsDataResponse {
@@ -65,10 +52,8 @@ interface GetComponentsDataResponse {
 
 export const getComponentsData = async ({
   componentId,
-  alias,
 }: {
   componentId: string;
-  alias: string;
 }): Promise<GetComponentsDataResponse> => {
   try {
     const response = await fetch(`${baseUrl}/codebase-integration/add`, {
@@ -76,7 +61,7 @@ export const getComponentsData = async ({
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name: componentId, alias }),
+      body: JSON.stringify({ name: componentId }),
     });
     return (await response.json()) as GetComponentsDataResponse;
   } catch (error) {
