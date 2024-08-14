@@ -70,7 +70,7 @@ async function promptForProjectDetails(cwd: string) {
         type: "text",
         name: "globalCSS",
         message: `Where is your global CSS file?`,
-        initial: "app/globals.css",
+        initial: "@/app/globals.css",
       },
       {
         type: "confirm",
