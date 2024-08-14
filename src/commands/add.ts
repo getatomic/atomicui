@@ -68,7 +68,7 @@ export const add = new Command()
         }
 
         if (existsSync(componentFilePath)) {
-          logger.warn(`Component ${component.name}.tsx already exists. Skipping.`);
+          logger.warn(`Component ${component.name}.tsx already exists. Rename or delete the existing file first. Skipping...`);
           // Todo: We can ask the user to overwrite the file.
           // continue;
         } else {

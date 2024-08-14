@@ -65,6 +65,6 @@ export const getComponentsData = async ({
     });
     return (await response.json()) as GetComponentsDataResponse;
   } catch (error) {
-    throw new Error(`Failed to fetch init data.`);
+    throw new Error(`Failed to fetch component data.`);
   }
 };
