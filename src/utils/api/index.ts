@@ -2,7 +2,7 @@ let baseUrl: string;
 if (process.env.NODE_ENV === "development") {
   baseUrl = "http://localhost:3000/api/";
 } else {
-  baseUrl = "https://app.getatomic.ai/api/";
+  baseUrl = "https://getatomic.ai/api/";
 }
 
 interface Theme {

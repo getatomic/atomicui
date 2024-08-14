@@ -11,7 +11,7 @@ You will be prompted with a series of questions to configure your project:
 
 1. **Choose a Theme**: Select a theme from the provided options and press Enter. 
 
-2. **Global CSS File**: Specify the path to your global.css file. If you are using a Next.js app, the default path is `src/app/globals.css`. You can also define a custom path based on your requirements.
+2. **Global CSS File**: Specify the path to your global.css file. If you are using a Next.js app, the default path is `@/app/globals.css`. You can also define a custom path based on your requirements.
 
 3. **Configure Import Alias**: Choose the default alias by pressing Enter or customize it. To customize, locate your `tsconfig.json` file and find the alias under the "paths" section. <br/> Example: **@[your_alias]/atomic-ui.**
 
