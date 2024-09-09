@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { loadConfig } from "tsconfig-paths";
-import { resolveImport } from "@/utils/resolve-import";
+import { resolveImport } from "@/bin/utils/resolve-import";
 
 export interface Config {
   theme: {

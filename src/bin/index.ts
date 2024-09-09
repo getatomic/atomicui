@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 
-import { init } from "@/commands/init";
-import { add } from "@/commands/add";
-import { getPackageInfo } from "@/utils/get-package-info";
+import { init } from "@/bin/commands/init";
+import { add } from "@/bin/commands/add";
+import { getPackageInfo } from "@/bin/utils/get-package-info";
 
 process.on("SIGINT", () => process.exit(0));
 process.on("SIGTERM", () => process.exit(0));

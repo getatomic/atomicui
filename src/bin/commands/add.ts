@@ -3,11 +3,11 @@ import path from "path";
 import { Command } from "commander";
 import ora from "ora";
 
-import { handleError } from "@/utils/handle-error";
-import { logger } from "@/utils/logger";
-import { getConfig } from "@/utils/get-config";
+import { handleError } from "@/bin/utils/handle-error";
+import { logger } from "@/bin/utils/logger";
+import { getConfig } from "@/bin/utils/get-config";
 
-import { Component, getComponentsData } from "@/utils/api";
+import { Component, getComponentsData } from "@/bin/utils/api";
 
 export const add = new Command()
   .name("add")

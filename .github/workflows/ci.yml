@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
+      - beta
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
       - uses: actions/checkout@v4
@@ -18,12 +18,37 @@ jobs:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install dependencies and build
-        run: yarn install --frozen-lockfile && yarn build
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
-      - name: Publish package on NPM 📦
+      - name: Build package
+        run: yarn build
+        env:
+          NODE_ENV: production
+
+      - name: Get version from package.json
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+      - name: Determine release type
+        id: release-type
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/beta" ]]; then
+            echo "::set-output name=type::beta"
+          elif [[ "${{ steps.package-version.outputs.current-version}}" == *"-beta."* ]]; then
+            echo "::set-output name=type::beta"
+          else
+            echo "::set-output name=type::stable"
+          fi
+
+      - name: Publish beta package on NPM 📦
+        if: steps.release-type.outputs.type == 'beta'
+        run: npm publish --tag beta --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+
+      - name: Publish stable package on NPM 📦
+        if: steps.release-type.outputs.type == 'stable'
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
-          NODE_ENV: production
-

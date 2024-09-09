@@ -5,12 +5,12 @@ import ora from "ora";
 import { execa } from "execa";
 import { Command } from "commander";
 
-import { handleError } from "@/utils/handle-error";
-import { logger } from "@/utils/logger";
-import { getPackageManager, checkPackageExists } from "@/utils/get-package-info";
-import { resolveConfigPaths, Config } from "@/utils/get-config";
+import { handleError } from "@/bin/utils/handle-error";
+import { logger } from "@/bin/utils/logger";
+import { getPackageManager, checkPackageExists } from "@/bin/utils/get-package-info";
+import { resolveConfigPaths, Config } from "@/bin/utils/get-config";
 
-import { getInitData } from "@/utils/api";
+import { getInitData } from "@/bin/utils/api";
 
 export const init = new Command()
   .name("init")

@@ -1,6 +1,6 @@
 {
   "name": "atomic",
-  "version": "2.1.2",
+  "version": "3.0.0-beta.1",
   "author": {
     "name": "Senantix Inc.",
     "url": "https://getatomic.ai"
@@ -18,9 +18,14 @@
     "ui",
     "atomic"
   ],
-  "exports": "./dist/index.js",
+  "exports": {
+    ".": "./dist/core/index.js",
+    "./react": "./dist/react/index.js"
+  },
   "type": "module",
-  "bin": "./dist/index.js",
+  "bin": {
+    "atomic": "./dist/bin/index.js"
+  },
   "scripts": {
     "build": "NODE_ENV=production rollup -c",
     "watch": "NODE_ENV=production rollup -c -w",
@@ -30,22 +35,28 @@
   "dependencies": {
     "@antfu/ni": "^0.21.12",
     "chalk": "^5.3.0",
-    "fs-extra": "^11.2.0",
     "commander": "^12.1.0",
     "execa": "^9.3.0",
+    "fs-extra": "^11.2.0",
     "ora": "^8.0.1",
     "prompts": "^2.4.2",
     "tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
+    "@rollup/plugin-alias": "^5.1.0",
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.7",
+    "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/commander": "^2.12.2",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.14.9",
     "@types/prompts": "^2.4.9",
+    "javascript-obfuscator": "^4.1.1",
     "rollup": "^4.18.0",
+    "rollup-plugin-obfuscator": "^1.1.0",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.10",
     "tslib": "^2.6.3",
