@@ -1,25 +1,46 @@
-import typescript from "@rollup/plugin-typescript";
+import typescript from '@rollup/plugin-typescript';
+import nodeResolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
+import alias from '@rollup/plugin-alias';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import terser from '@rollup/plugin-terser';
+import babel from '@rollup/plugin-babel';
 import obfuscator from 'rollup-plugin-obfuscator';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const isProd = process.env.NODE_ENV === 'production';
 
 const sharedPlugins = [
+  typescript({
+    tsconfig: './tsconfig.json',
+    sourceMap: !isProd,
+  }),
+  babel({
+    extensions: ['.js', '.ts', '.tsx', '.jsx'],
+    babelHelpers: 'bundled',
+    presets: ['@babel/preset-react'],
+    sourceMaps: !isProd,
+  }),
   nodeResolve({
     preferBuiltins: true,
     exportConditions: ['node'],
   }),
   commonjs(),
   json(),
+  alias({
+    entries: [
+      { find: '@atomic', replacement: path.resolve(__dirname, 'src') },
+    ]
+  }),
   replace({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
     preventAssignment: true,
   }),
-];
+]
 
 if (isProd) {
   sharedPlugins.push(
@@ -47,92 +68,23 @@ if (isProd) {
       unicodeEscapeSequence: false
     })
   );
-  sharedPlugins.push(terser({
-    ecma: 2020,
-    mangle: true,
-    compress: {
-      dead_code: true,
-      drop_debugger: true,
-      conditionals: true,
-      evaluate: true,
-      booleans: true,
-      loops: true,
-      unused: true,
-      hoist_funs: true,
-      keep_fargs: false,
-      hoist_vars: true,
-      if_return: true,
-      join_vars: true,
-      side_effects: true,
-      warnings: false,
-    },
-  }));
+  sharedPlugins.push(terser());
 }
 
-const safeTreeShake = {
-  moduleSideEffects: 'no-external',
-  tryCatchDeoptimization: false,
+export default {
+  input: {
+    'core': 'src/core/index.ts',
+    'react': 'src/react/index.ts',
+    'utils': 'src/utils/index.ts',
+  },
+  output: {
+    dir: 'dist',
+    format: 'cjs',
+    sourcemap: !isProd,
+    entryFileNames: '[name]/index.js',
+  },
+  plugins: sharedPlugins,
+  external: [
+    'react', 'react-dom'
+  ],
 };
-
-export default [
-  {
-    input: "./src/core/index.ts",
-    output: {
-      file: "./dist/core/index.js",
-      format: "es",
-      sourcemap: isProd ? false : 'inline',
-    },
-    plugins: [
-      ...sharedPlugins,
-      typescript({
-        tsconfig: "tsconfig.json",
-        outDir: "./dist/core",
-      })
-    ],
-    treeshake: safeTreeShake,
-  },
-  {
-    input: "./src/react/index.ts",
-    output: {
-      file: "./dist/react/index.js",
-      format: "es",
-      sourcemap: isProd ? false : 'inline',
-    },
-    plugins: [
-      ...sharedPlugins,
-      typescript({
-        tsconfig: "tsconfig.json",
-        outDir: "./dist/react",
-      })
-    ],
-    treeshake: safeTreeShake,
-    external: ['react', 'react-dom'],
-  },
-  {
-    input: "./src/bin/index.ts",
-    output: {
-      file: "./dist/bin/index.js",
-      format: "cjs",
-      exports: "auto",
-      sourcemap: isProd ? false : 'inline',
-    },
-    external: [
-      'fs', 'path', 'os', 'child_process',
-      'commander', 'chalk', 'prompts', 'ora',
-      'execa', 'fs-extra', '@antfu/ni', 'chalk',
-      'tsconfig-paths'
-    ],
-    plugins: [
-      commonjs(),
-      json(),
-      typescript({
-        tsconfig: "tsconfig.json",
-        outDir: "./dist/bin",
-      }),
-      replace({
-        "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || 'development'),
-        preventAssignment: true,
-      })
-    ],
-  }
-];

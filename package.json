@@ -18,14 +18,15 @@
     "ui",
     "atomic"
   ],
+  "main": "dist/core/index.js",
+  "module": "dist/core/index.js",
+  "types": "dist/core/index.d.ts",
   "exports": {
-    ".": "./dist/core/index.js",
-    "./react": "./dist/react/index.js"
+    "./core": "./dist/core/index.js",
+    "./react": "./dist/react/index.js",
+    "./utils": "./dist/utils/index.js"
   },
   "type": "module",
-  "bin": {
-    "atomic": "./dist/bin/index.js"
-  },
   "scripts": {
     "build": "NODE_ENV=production rollup -c",
     "watch": "NODE_ENV=production rollup -c -w",
@@ -34,16 +35,24 @@
   },
   "dependencies": {
     "@antfu/ni": "^0.21.12",
+    "@babel/core": "^7.25.2",
+    "@babel/preset-react": "^7.24.7",
+    "@types/uuid": "^10.0.0",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "execa": "^9.3.0",
     "fs-extra": "^11.2.0",
     "ora": "^8.0.1",
     "prompts": "^2.4.2",
-    "tsconfig-paths": "^4.2.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "rollup-plugin-dts": "^6.1.1",
+    "tsconfig-paths": "^4.2.0",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^5.1.0",
+    "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
@@ -54,6 +63,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.14.9",
     "@types/prompts": "^2.4.9",
+    "@types/react": "^18.3.5",
     "javascript-obfuscator": "^4.1.1",
     "rollup": "^4.18.0",
     "rollup-plugin-obfuscator": "^1.1.0",

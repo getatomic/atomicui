@@ -1,8 +1,3 @@
-import coreFunction from "@/core";
-console.log('Hello, React!');
-
-export default function importantFunction() {
-  const coreResult = coreFunction();
-  const importantVariable = 'Hello, React!';
-  return importantVariable;
-}
+export * from './context'
+export * from './components'
+export * from './hooks'
